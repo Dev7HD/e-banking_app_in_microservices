@@ -2,6 +2,7 @@ package ma.dev7hd.transactionservice.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import ma.dev7hd.transactionservice.enums.TransactionType;
 
 import java.util.Date;
 
@@ -16,6 +17,7 @@ public class Transaction {
     private Date date;
     private String ribSender;
     private String ribReceiver;
+    private TransactionType transactionType;
 
     @PrePersist
     private void generateDate(){

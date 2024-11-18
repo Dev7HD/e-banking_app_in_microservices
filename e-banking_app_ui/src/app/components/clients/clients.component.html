@@ -1,0 +1,52 @@
+<div class="container mt-3 flex justify-content-center">
+  <div class="p-card" style="{'min-width': '50rem'}">
+    <div class="p-card-title flex justify-content-center p-5">Clients</div>
+    <div class="p-card-body">
+      <div class="justify-content-center flex">
+        <p-progressSpinner
+          *ngIf="loading"
+          styleClass="w-4rem h-4rem"
+          strokeWidth="8"
+          fill="var(--surface-ground)"
+          animationDuration=".5s" />
+      </div>
+      <p-table
+        *ngIf="!loading"
+        [value]="clients"
+        responsiveLayout="stack"
+        [breakpoint]="'960px'"
+        [paginator]="true"
+        [rows]="5"
+        [rowsPerPageOptions]="[5, 10, 20]"
+        [tableStyle]="{'min-width': '50rem'}">
+        <ng-template pTemplate="header" let-columns>
+          <tr>
+            <th>#</th>
+            <th>Client Firstname</th>
+            <th>Client Lastname</th>
+            <th>Client Type</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-client let-columns="columns">
+          <tr>
+            <td>
+              <span class="p-column-title">#</span>{{client.id}}
+            </td>
+            <td>
+              <span class="p-column-title">Client Firstname</span>{{client.firstName}}
+            </td>
+            <td>
+              <span class="p-column-title">Client Firstname</span>{{client.lastName}}
+            </td>
+            <td>
+              <p-tag
+                [value]="client.clientType"
+                [severity]="getClientSeverity(client.clientType)" />
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+
+</div>

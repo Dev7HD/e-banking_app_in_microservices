@@ -1,0 +1,93 @@
+<p-toolbar
+  styleClass="bg-gray-900 shadow-2"
+  [style]="{ 'border-radius': '3rem', 'background-image': 'linear-gradient(to right, var(--bluegray-500), var(--bluegray-800))' }">
+  <ng-template pTemplate="start">
+    <img alt="avatar" src="/assets/img/logo.png"
+      [style]="{ 'width': '50px'}"
+    />
+  </ng-template>
+  <ng-template pTemplate="center">
+    <div class="flex flex-wrap align-items-center gap-3">
+      <button
+        class="mr-2 p-link inline-flex justify-content-center align-items-center text-white h-3rem w-3rem border-circle hover:bg-white-alpha-10 transition-all transition-duration-200"
+        pTooltip="Home"
+        tooltipPosition="bottom"
+        (click)="home()"
+      >
+        <i class="pi pi-home text-2xl pi-color-whitesmoke"></i>
+      </button>
+      <button
+        class="mr-2 p-link inline-flex justify-content-center align-items-center text-white h-3rem w-3rem border-circle hover:bg-white-alpha-10 transition-all transition-duration-200"
+        pTooltip="Clients"
+        tooltipPosition="bottom"
+        (click)="clients()"
+      >
+        <i class="pi pi-user text-2xl pi-color-whitesmoke"></i>
+      </button>
+      <button
+        class="mr-2 p-link inline-flex justify-content-center align-items-center text-white h-3rem w-3rem border-circle hover:bg-white-alpha-10 transition-all transition-duration-200"
+        pTooltip="Transactions"
+        tooltipPosition="bottom"
+        (click)="transactions()"
+      >
+        <i class="pi pi-chart-line text-2xl pi-color-whitesmoke"></i>
+      </button>
+      <button
+        class="mr-2 p-link inline-flex justify-content-center align-items-center text-white h-3rem w-3rem border-circle hover:bg-white-alpha-10 transition-all transition-duration-200"
+        pTooltip="Accounts"
+        tooltipPosition="bottom"
+        (click)="accounts()"
+      >
+        <i class="pi pi-building-columns text-2xl pi-color-whitesmoke"></i>
+      </button>
+      <button
+        class="mr-2 p-link inline-flex justify-content-center align-items-center text-white h-3rem w-3rem border-circle hover:bg-white-alpha-10 transition-all transition-duration-200"
+        pTooltip="Make New Transaction"
+        tooltipPosition="bottom"
+        (click)="newTransaction()"
+      >
+        <i class="pi pi-send text-2xl pi-color-whitesmoke"></i>
+      </button>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="end">
+    <div
+      *ngIf="loadProfileService.profile; else loginTemplate"
+      class="flex align-items-center gap-2">
+      <div class="card flex justify-content-center">
+        <p-splitButton
+          label="Save"
+          (onClick)="account()"
+          severity="contrast"
+          [model]="items">
+          <ng-template pTemplate="content">
+                <span class="flex align-items-center font-bold center-content">
+                    <p-avatar
+                      image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png"
+                      shape="circle"
+                      class="mr-2"
+                    />
+                    <span class="font-bold text-bluegray-50">
+                      {{loadProfileService.kcService.getUsername()}}
+                    </span>
+                </span>
+          </ng-template>
+        </p-splitButton>
+      </div>
+
+    </div>
+    <ng-template #loginTemplate>
+      <button
+        (click)="login()"
+        pButton
+        pRipple
+        label="Login"
+        class="p-button-success"
+      >
+      </button>
+    </ng-template>
+  </ng-template>
+</p-toolbar>
+<router-outlet>
+
+</router-outlet>

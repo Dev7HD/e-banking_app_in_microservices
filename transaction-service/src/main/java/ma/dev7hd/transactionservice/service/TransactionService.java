@@ -5,6 +5,7 @@ import ma.dev7hd.transactionservice.clients.AccountRestClient;
 import ma.dev7hd.transactionservice.dtos.TransactionAccountsRibDTO;
 import ma.dev7hd.transactionservice.dtos.TransactionDTO;
 import ma.dev7hd.transactionservice.entities.Transaction;
+import ma.dev7hd.transactionservice.enums.TransactionType;
 import ma.dev7hd.transactionservice.repositories.TransactionRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -39,6 +40,7 @@ public class TransactionService implements ITransactionService {
                     .description(transactionDTO.getDescription())
                     .ribReceiver(ribDTO.getRibReceiver())
                     .ribSender(ribDTO.getRibSender())
+                    .transactionType(TransactionType.valueOf(transactionDTO.getTransactionType().toString()))
                     .build();
 
             transactionRepository.save(transaction);

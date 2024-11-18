@@ -1,0 +1,52 @@
+<p-toast position="top-center"/>
+<div class="container mt-4 lg:max-w-30rem">
+  <div class="p-card">
+    <div class="p-card-title p-4 flex justify-content-center">New Transaction</div>
+    <div class="p-card-body">
+      <div class="justify-content-center flex">
+        <p-progressSpinner
+          *ngIf="isSaving"
+          styleClass="w-4rem h-4rem"
+          strokeWidth="8"
+          fill="var(--surface-ground)"
+          animationDuration=".5s" />
+      </div>
+      <form [formGroup]="transactionFormGroup" (ngSubmit)="makeTransaction()">
+        <p-inputGroup class="mb-3">
+          <p-inputGroupAddon>
+            <i class="pi pi-arrow-up-right"></i>
+          </p-inputGroupAddon>
+          <input pInputText placeholder="RIB Sender" formControlName="ribSender"/>
+        </p-inputGroup>
+        <p-inputGroup class="mb-3">
+          <p-inputGroupAddon>
+            <i class="pi pi-arrow-down-left"></i>
+          </p-inputGroupAddon>
+          <input pInputText placeholder="RIB Receiver" formControlName="ribReceiver"/>
+        </p-inputGroup>
+        <p-inputGroup class="mb-3">
+          <p-inputGroupAddon>$</p-inputGroupAddon>
+          <input type="text" pInputText placeholder="Amount" formControlName="amount"/>
+          <p-inputGroupAddon>.00</p-inputGroupAddon>
+        </p-inputGroup>
+        <div class="mb-3 flex justify-content-center">
+          <p-selectButton
+            [options]="stateOptions"
+            formControlName="transactionType"
+            optionLabel="label"
+            optionValue="value"
+          />
+        </div>
+        <p-inputGroup class="mb-3">
+          <p-inputGroupAddon>
+            <i class="pi pi-file-edit"></i>
+          </p-inputGroupAddon>
+          <input pInputText placeholder="Description" formControlName="description"/>
+        </p-inputGroup>
+        <div class="flex justify-content-center">
+          <p-button label="Transfer" type="submit" icon="pi pi-send" iconPos="right" [disabled]="isSaving"/>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
