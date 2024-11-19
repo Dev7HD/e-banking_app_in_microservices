@@ -31,6 +31,8 @@ import {ReactiveFormsModule} from "@angular/forms";
 import {MessageModule} from "primeng/message";
 import {MessageService} from "primeng/api";
 import {PaginatorModule} from "primeng/paginator";
+import {IconFieldModule} from "primeng/iconfield";
+import {InputIconModule} from "primeng/inputicon";
 
 function initializeKeycloak(keycloak: KeycloakService) {
   return () =>
@@ -80,7 +82,9 @@ function initializeKeycloak(keycloak: KeycloakService) {
     ToastModule,
     ReactiveFormsModule,
     MessageModule,
-    PaginatorModule
+    PaginatorModule,
+    IconFieldModule,
+    InputIconModule
   ],
   providers: [
     {

@@ -12,11 +12,21 @@ export class AccountsComponent implements OnInit {
 
   accounts!: Account[];
   loading: boolean = false;
+  clientType!: any[];
+  accountTypes!: any[];
 
   constructor(private _http: HttpClient) {
   }
 
   ngOnInit() {
+    this.accountTypes = [
+      {label: 'Current account', value: "CURRENT_ACCOUNT"},
+      {label: 'Saving account', value: "SAVING_ACCOUNT"},
+    ]
+    this.clientType = [
+      {label: "Moral", value: "Moral"},
+      {label: "Physical", value: "Physical"}
+    ]
     this.loading = true;
     this._http.get<Account[]>(`${environment.account_service_host}/accounts`).subscribe({
       next: data => {

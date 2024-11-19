@@ -1,64 +1,133 @@
-<div class="container mt-3 flex justify-content-center">
+<div class="mt-3 flex justify-content-center">
   <div class="p-card" style="{'min-width': '50rem'}">
     <div class="p-card-title flex justify-content-center p-5">Transactions</div>
     <div class="p-card-body">
-      <div class="justify-content-center flex">
-        <p-progressSpinner
-          *ngIf="loading"
-          styleClass="w-4rem h-4rem"
-          strokeWidth="8"
-          fill="var(--surface-ground)"
-          animationDuration=".5s" />
-      </div>
-      <p-table
-        *ngIf="!loading"
-        [value]="transactions"
-        responsiveLayout="stack"
-        [breakpoint]="'960px'"
-        [paginator]="true"
-        [rows]="5"
-        [rowsPerPageOptions]="[5, 10, 20]"
-        [tableStyle]="{'min-width': '50rem'}">
-        <ng-template pTemplate="header" let-columns>
-          <tr>
-            <th>#</th>
-            <th>RIB Sender</th>
-            <th>RIB Receiver</th>
-            <th>Amount</th>
-            <th>Date</th>
-            <th>Type</th>
-            <th>Description</th>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-transaction let-columns="columns">
-          <tr>
-            <td>
-              <span class="p-column-title">#</span>{{transaction.id}}
-            </td>
-            <td>
-              <span class="p-column-title">RIB Sender</span>{{transaction.ribSender}}
-            </td>
-            <td>
-              <span class="p-column-title">RIB Receiver</span>{{transaction.ribReceiver}}
-            </td>
-            <td>
-              <span class="p-column-title">Amount</span>{{transaction.amount}}
-            </td>
-            <td>
-              <span class="p-column-title">Date</span>{{transaction.date | date: 'dd/mm/yyyy'}}
-            </td>
-            <td>
-              <p-tag
-                [value]="transaction.transactionType"
-                [severity]="getSeverity(transaction.transactionType)" />
-            </td>
-            <td>
-              <span class="p-column-title">Description</span>{{transaction.description}}
-            </td>
+      <div class="p-card">
+        <div class="justify-content-center flex">
+          <p-progressSpinner
+            *ngIf="loading"
+            styleClass="w-4rem h-4rem"
+            strokeWidth="8"
+            fill="var(--surface-ground)"
+            animationDuration=".5s" />
+        </div>
+        <p-table
+          #dt
+          [value]="transactions"
+          responsiveLayout="stack"
+          [breakpoint]="'960px'"
+          [paginator]="true"
+          [rows]="5"
+          [loading]="loading"
+          [rowsPerPageOptions]="[5, 10, 20]"
+          [globalFilterFields]="['id', 'ribSender', 'ribReceiver', 'amount', 'date', 'transactionType', 'description']"
+          [tableStyle]="{'min-width': '50rem'}">
+          <ng-template pTemplate="caption">
+            <div class="flex">
+              <p-iconField iconPosition="left" class="ml-auto">
+                <p-inputIcon>
+                  <i class="pi pi-search"></i>
+                </p-inputIcon>
+                <input
+                  #globalFilter
+                  pInputText
+                  type="text"
+                  (input)="dt.filterGlobal(globalFilter.value, 'contains')"
+                  placeholder="Search keyword" />
+              </p-iconField>
+            </div>
+          </ng-template>
+          <ng-template pTemplate="header" let-columns>
+            <tr>
+              <th>#</th>
+              <th>RIB Sender</th>
+              <th>RIB Receiver</th>
+              <th>Amount</th>
+              <th>Date</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <th>
 
-          </tr>
-        </ng-template>
-      </p-table>
+              </th>
+              <th>
+                <p-columnFilter
+                  type="text"
+                  field="ribSender"
+                  placeholder="Search by Sender RIB"
+                  ariaLabel="Sender RIB filter" />
+              </th>
+              <th>
+                <p-columnFilter
+                  type="text"
+                  field="ribReceiver"
+                  placeholder="Search by Receiver RIB"
+                  ariaLabel="Receiver RIB filter" />
+              </th>
+              <th>
+
+              </th>
+              <th>
+
+              </th>
+              <th>
+                <p-columnFilter field="transactionType" matchMode="equals" [showMenu]="false">
+                  <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                    <p-dropdown
+                      [ngModel]="value"
+                      [options]="transactionTypes"
+                      (onChange)="filter($event.value)"
+                      placeholder="Select One"
+                      [showClear]="true">
+                      <ng-template let-option pTemplate="item">
+                        <p-tag
+                          [value]="option.value"
+                          [severity]="getSeverity(option.value)" />
+                      </ng-template>
+                    </p-dropdown>
+                  </ng-template>
+                </p-columnFilter>
+              </th>
+              <th>
+                <p-columnFilter
+                  type="text"
+                  field="description"
+                  placeholder="Search by description"
+                  ariaLabel="Description filter" />
+              </th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-transaction let-columns="columns">
+            <tr>
+              <td>
+                <span class="p-column-title">#</span>{{transaction.id}}
+              </td>
+              <td>
+                <span class="p-column-title">RIB Sender</span>{{transaction.ribSender}}
+              </td>
+              <td>
+                <span class="p-column-title">RIB Receiver</span>{{transaction.ribReceiver}}
+              </td>
+              <td>
+                <span class="p-column-title">Amount</span>{{transaction.amount}}
+              </td>
+              <td>
+                <span class="p-column-title">Date</span>{{transaction.date | date: 'dd/mm/yyyy'}}
+              </td>
+              <td>
+                <p-tag
+                  [value]="transaction.transactionType"
+                  [severity]="getSeverity(transaction.transactionType)" />
+              </td>
+              <td>
+                <span class="p-column-title">Description</span>{{transaction.description}}
+              </td>
+
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
     </div>
   </div>
 </div>

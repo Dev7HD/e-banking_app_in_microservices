@@ -10,11 +10,16 @@ import {environment} from "../../../environments/environment.development";
 })
 export class ClientsComponent implements OnInit {
 
-  clients!: Client[];
+  clients: any[] = [];
   loading: boolean = false;
+  clientType!: any[];
   constructor(private _http: HttpClient) { }
 
   ngOnInit() {
+    this.clientType = [
+      {label: "Moral", value: "Moral"},
+      {label: "Physical", value: "Physical"}
+    ]
     this.loading = true;
     this._http.get<Client[]>(`${environment.client_service_host}/clients`).subscribe({
       next: data => {

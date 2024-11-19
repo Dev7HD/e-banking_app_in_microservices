@@ -12,9 +12,14 @@ export class TransactionsComponent implements OnInit {
 
   transactions!: Transaction[];
   loading: boolean = false;
+  transactionTypes!: any[];
   constructor(private _http: HttpClient) { }
 
   ngOnInit() {
+    this.transactionTypes = [
+      {label: "Normal", value: "NORMAL"},
+      {label: "Instantly", value: "INSTANTLY"},
+    ]
     this.loading = true;
     this._http.get<Transaction[]>(`${environment.transaction_service_host}/transactions`).subscribe({
       next: data => {

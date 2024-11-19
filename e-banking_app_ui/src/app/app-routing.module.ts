@@ -7,7 +7,8 @@ import {AuthGuard} from "./guards/auth.guard";
 import {NewTransactionComponent} from "./components/new-transaction/new-transaction.component";
 
 const routes: Routes = [
-  {path: 'clients', component: ClientsComponent, canActivate: [AuthGuard]},
+  //{path: 'clients', component: ClientsComponent, canActivate: [AuthGuard]},
+  {path: 'clients', component: ClientsComponent},
   {path: 'accounts', component: AccountsComponent, canActivate: [AuthGuard]},
   {path: 'transactions', component: TransactionsComponent, canActivate: [AuthGuard]},
   {path: 'new-transaction', component: NewTransactionComponent, canActivate: [AuthGuard]},

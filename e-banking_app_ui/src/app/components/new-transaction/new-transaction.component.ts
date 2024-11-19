@@ -43,6 +43,7 @@ export class NewTransactionComponent implements OnInit {
         this.transactionFormGroup.enable();
         this.initForm();
       }, error: () => {
+        this.isSaving=false;
         this.transactionFormGroup.enable();
         this.showErrorMsg()
       }
