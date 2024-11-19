@@ -2,6 +2,9 @@
 
 Welcome to the E-Banking App, a microservices-based backend application built with Java Spring Boot and a frontend developed using Angular. This project aims at providing a modular architecture to manage clients, accounts, and transactions with central authentication through Keycloak.
 
+## 🧩 Architecture
+![Global Architecture](./screenshots/Architecture.png "Global Architecture")
+
 ## ⚡ Features
 
 - **Microservices Architecture**: Adopted for better scalability and maintainability.
@@ -11,6 +14,13 @@ Welcome to the E-Banking App, a microservices-based backend application built wi
 - **API Gateway**: Using Spring Cloud Gateway for routing requests.
 - **Configuration Management**: Centralized configuration with Spring Cloud Config.
 - **Service Discovery**: Implemented using Eureka Server.
+
+## 📷 ScreenShots
+![Clients](./screenshots/Clients.png)
+![Accounts](./screenshots/Accounts.png)
+![Transactions](./screenshots/Transactions.png)
+![Transaction-inaction](./screenshots/Transaction-inaction.png)
+![Transaction-success](./screenshots/Transaction-success.png)
 
 ## 📁 Repository Structure
 
