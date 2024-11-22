@@ -12,7 +12,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -54,6 +54,17 @@ public class TransactionService implements ITransactionService {
     @Override
     public List<Transaction> getAllTransactions() {
         return transactionRepository.findAll();
+    }
+
+    @Override
+    public List<Transaction> getTransactionsByRib(String rib){
+        return transactionRepository.findByRib(rib);
+    }
+
+    @Override
+    public void deleteTransactions(String rib){
+        List<Transaction> transactions = new ArrayList<>(getTransactionsByRib(rib));
+        transactionRepository.deleteAll(transactions);
     }
 
 

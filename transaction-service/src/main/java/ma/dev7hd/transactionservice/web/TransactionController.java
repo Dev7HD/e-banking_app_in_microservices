@@ -24,4 +24,19 @@ public class TransactionController {
     public List<Transaction> getAllTransactions() {
         return transactionService.getAllTransactions();
     }
+
+    @GetMapping("/rib/{rib}")
+    public ResponseEntity<List<Transaction>> getTransactionsByRib(@PathVariable String rib){
+        List<Transaction> transactions = transactionService.getTransactionsByRib(rib);
+        if(transactions.isEmpty()){
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(transactions);
+    }
+
+    @DeleteMapping("/rib/{rib}")
+    public ResponseEntity<String> deleteTransactions(@PathVariable String rib){
+        transactionService.deleteTransactions(rib);
+        return ResponseEntity.ok("Account transactions deleted successfully");
+    }
 }

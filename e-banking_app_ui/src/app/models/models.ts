@@ -5,6 +5,12 @@ export interface Client{
   clientType: ClientType;
 }
 
+export interface ClientDTO{
+  firstName: string;
+  lastName: string;
+  clientType: ClientType;
+}
+
 export interface Account{
   id: string;
   balance: number;

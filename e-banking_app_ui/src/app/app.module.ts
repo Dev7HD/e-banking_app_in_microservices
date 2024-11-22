@@ -33,6 +33,8 @@ import {MessageService} from "primeng/api";
 import {PaginatorModule} from "primeng/paginator";
 import {IconFieldModule} from "primeng/iconfield";
 import {InputIconModule} from "primeng/inputicon";
+import {DialogModule} from "primeng/dialog";
+import {SpeedDialModule} from "primeng/speeddial";
 
 function initializeKeycloak(keycloak: KeycloakService) {
   return () =>
@@ -56,7 +58,7 @@ function initializeKeycloak(keycloak: KeycloakService) {
     TransactionsComponent,
     ClientsComponent,
     AccountsComponent,
-    NewTransactionComponent
+    NewTransactionComponent,
   ],
   imports: [
     AppRoutingModule,
@@ -84,7 +86,9 @@ function initializeKeycloak(keycloak: KeycloakService) {
     MessageModule,
     PaginatorModule,
     IconFieldModule,
-    InputIconModule
+    InputIconModule,
+    DialogModule,
+    SpeedDialModule
   ],
   providers: [
     {

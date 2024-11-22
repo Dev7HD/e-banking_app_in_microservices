@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import ma.dev7hd.accountservice.business.IBusinessAccount;
 import ma.dev7hd.accountservice.dtos.AccountDTO;
 import ma.dev7hd.accountservice.dtos.NewAccountDTO;
-import ma.dev7hd.accountservice.dtos.TransactionAccountsBalanceDTO;
 import ma.dev7hd.accountservice.dtos.TransactionAccountsRibDTO;
 import ma.dev7hd.accountservice.entities.Account;
 import ma.dev7hd.accountservice.mappers.IMapper;
@@ -14,9 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.security.auth.login.AccountNotFoundException;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -63,28 +60,47 @@ public class AccountService implements IAccountService {
     public AccountDTO updateAccount(AccountDTO accountDTO, UUID id) throws AccountNotFoundException {
         Account account = accountRepository.findById(id).orElseThrow(() -> new AccountNotFoundException("Account not found"));
         if (accountDTO.getAccountType() != null) account.setAccountType(accountDTO.getAccountType());
-        if (accountDTO.getBalance() != null) account.setBalance(accountDTO.getBalance());
         if (accountDTO.getCurrency() != null) account.setCurrency(accountDTO.getCurrency());
         return mapper.accountToAccountDTO(accountRepository.save(businessAccount.addClientInfo(account)));
     }
 
+    @Transactional
     @Override
     public void deleteAccountById(UUID id) throws AccountNotFoundException {
         Account account = accountRepository.findById(id).orElseThrow(() -> new AccountNotFoundException("Account not found"));
-        accountRepository.delete(account);
+        ResponseEntity<String> response = businessAccount.deleteAccountTransactions(account.getRib());
+        if (response.getStatusCode().value() == 200){
+            accountRepository.delete(account);
+        }
+        throw new AccountNotFoundException("Delete account and their transactions failed");
     }
 
     @Transactional
     @Override
     public ResponseEntity<String> processTransaction(TransactionAccountsRibDTO dto, double amount){
-        Account sender = accountRepository.findByRib(dto.getRibSender()).orElse(null);
-        Account receiver = accountRepository.findByRib(dto.getRibReceiver()).orElse(null);
-        if(sender != null && receiver != null && amount > 0 && sender.getBalance() >= amount){
-            Account debited = businessAccount.debit(sender, amount);
-            Account credited = businessAccount.credit(receiver, amount);
-            accountRepository.saveAll(List.of(debited, credited));
-            return ResponseEntity.ok("Transaction Successful");
+
+        if (!Objects.equals(dto.getRibReceiver(), dto.getRibSender())){
+            Account sender = accountRepository.findByRib(dto.getRibSender()).orElse(null);
+            Account receiver = accountRepository.findByRib(dto.getRibReceiver()).orElse(null);
+            if(sender != null && receiver != null && amount > 0 && sender.getBalance() >= amount){
+                Account debited = businessAccount.debit(sender, amount);
+                Account credited = businessAccount.credit(receiver, amount);
+                accountRepository.saveAll(List.of(debited, credited));
+                return ResponseEntity.ok("Transaction Successful");
+            }
         }
         return ResponseEntity.badRequest().build();
+    }
+
+    @Transactional
+    @Override
+    public ResponseEntity<String> deleteAccountByClientId(Long clientId){
+        Optional<Account> optionalAccount = accountRepository.findByClientId(clientId);
+        if (optionalAccount.isPresent()){
+            Account account = optionalAccount.get();
+            accountRepository.delete(account);
+            return ResponseEntity.ok("Delete account successfully");
+        }
+        return ResponseEntity.notFound().build();
     }
 }

@@ -31,15 +31,6 @@ export class TransactionsComponent implements OnInit {
         console.error("Error fetching transactions data: ", error);
       }
     })
-
-    this._http.get(`${environment.transaction_service_host}/transactions`).subscribe({
-      next: data => {
-        console.warn("2- fetching transactions....")
-        console.table(data);
-      }, error: error => {
-        console.error("Error fetching transactions data: ", error);
-      }
-    })
   }
 
   getSeverity(clientType: string) {

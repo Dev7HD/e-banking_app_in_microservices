@@ -1,3 +1,39 @@
+<p-toast position="top-center"/>
+<p-dialog  header="New Client" [modal]="true" [(visible)]="newClientVisibleDialog" [style]="{ width: '25rem' }">
+  <form [formGroup]="newClientFormGroup" (ngSubmit)="saveClient()">
+    <div class="flex align-items-center gap-3 mb-3 mt-3">
+      <label for="first-name" class="font-semibold w-6rem">Firstname</label>
+      <input pInputText id="first-name" class="flex-auto" autocomplete="off" formControlName="firstName" required/>
+    </div>
+    <div class="flex align-items-center gap-3 mb-3">
+      <label for="last-name" class="font-semibold w-6rem">Lastname</label>
+      <input pInputText id="last-name" class="flex-auto" autocomplete="off" formControlName="lastName" required/>
+    </div>
+    <div class="flex align-items-center gap-3 mb-5">
+      <label for="client-type" class="font-semibold w-6rem">Client Type</label>
+      <div class="p-card flex justify-content-center">
+        <p-selectButton
+          id="client-type"
+          [options]="clientType"
+          formControlName="clientType"
+          optionLabel="label"
+          optionValue="value" />
+      </div>
+    </div>
+    <div class="flex justify-content-end gap-2">
+      <p-button label="Cancel" severity="secondary" (onClick)="dismiss()" />
+      <p-button label="Save" type="submit" [disabled]="isSaving || !newClientFormGroup.valid">
+        <p-progressSpinner
+          *ngIf="isSaving"
+          styleClass="w-1rem h-1rem"
+          strokeWidth="8"
+          fill="var(--surface-ground)"
+          animationDuration=".5s" />
+      </p-button>
+    </div>
+  </form>
+</p-dialog>
+
 <div class="container mt-3 flex justify-content-center">
   <div class="p-card" style="{'min-width': '50rem'}">
     <div class="p-card-title flex justify-content-center p-5">Clients</div>
@@ -13,6 +49,8 @@
         </div>
         <p-table
           #dt
+          dataKey="id"
+          editMode="row"
           [value]="clients"
           responsiveLayout="stack"
           [breakpoint]="'960px'"
@@ -24,6 +62,7 @@
           [tableStyle]="{'min-width': '50rem'}">
           <ng-template pTemplate="caption">
             <div class="flex">
+              <p-button label="New Client" (onClick)="newClientVisibleDialog = true"/>
               <p-iconField iconPosition="left" class="ml-auto">
                 <p-inputIcon>
                   <i class="pi pi-search"></i>
@@ -43,6 +82,7 @@
               <th>Client Firstname</th>
               <th>Client Lastname</th>
               <th>Client Type</th>
+              <th>Actions</th>
             </tr>
             <tr>
               <th>
@@ -84,9 +124,10 @@
                   </ng-template>
                 </p-columnFilter>
               </th>
+              <th></th>
             </tr>
           </ng-template>
-          <ng-template pTemplate="body" let-client let-columns="columns">
+          <!--<ng-template pTemplate="body" let-client let-columns="columns">
             <tr>
               <td>
                 <span class="p-column-title">#</span>{{client.id}}
@@ -101,6 +142,107 @@
                 <p-tag
                   [value]="client.clientType"
                   [severity]="getClientSeverity(client.clientType)" />
+              </td>
+              <td>
+                <p-speedDial
+
+                  [model]="actions"
+                  direction="left"
+                  [radius]="80"
+                  type="semi-circle" />
+              </td>
+            </tr>
+          </ng-template>-->
+          <ng-template pTemplate="body" let-client let-editing="editing" let-ri="rowIndex">
+            <tr [pEditableRow]="client">
+              <td>
+                <!--<p-cellEditor>
+                  <ng-template pTemplate="input">
+                    <input
+                      pInputText
+                      type="text"
+                      [(ngModel)]="client.id" />
+                  </ng-template>
+                  <ng-template pTemplate="output">
+                    {{client.id}}
+                  </ng-template>
+                </p-cellEditor>-->
+                <span class="p-column-title">#</span>{{client.id}}
+              </td>
+              <td>
+                <p-cellEditor>
+                  <ng-template pTemplate="input">
+                    <input
+                      pInputText type="text"
+                      [(ngModel)]="client.firstName"
+                      required />
+                  </ng-template>
+                  <ng-template pTemplate="output">
+                    {{client.firstName}}
+                  </ng-template>
+                </p-cellEditor>
+              </td>
+              <td>
+                <p-cellEditor>
+                  <ng-template pTemplate="input">
+                    <input
+                      pInputText type="text"
+                      [(ngModel)]="client.lastName"
+                      required />
+                  </ng-template>
+                  <ng-template pTemplate="output">
+                    {{client.lastName}}
+                  </ng-template>
+                </p-cellEditor>
+              </td>
+              <td>
+                <p-cellEditor>
+                  <ng-template pTemplate="input">
+                    <p-dropdown
+                      [options]="clientType"
+                      appendTo="body"
+                      [(ngModel)]="client.clientType"
+                      [style]="{'width':'100%'}" />
+                  </ng-template>
+                  <ng-template pTemplate="output">
+                    <p-tag
+                      [value]="client.clientType"
+                      [severity]="getClientSeverity(client.clientType.toString())" />
+                  </ng-template>
+                </p-cellEditor>
+              </td>
+              <td>
+                <div class="flex align-items-center justify-content-center gap-2">
+                  <button
+                    *ngIf="!editing"
+                    pButton
+                    pRipple
+                    type="button"
+                    pInitEditableRow
+                    icon="pi pi-pencil"
+                    (click)="onRowEditInit(client)"
+                    class="p-button-rounded p-button-text">
+                  </button>
+                  <button
+                    *ngIf="editing"
+                    pButton
+                    pRipple
+                    type="button"
+                    pSaveEditableRow
+                    icon="pi pi-check"
+                    (click)="onRowEditSave(client.id,client,ri)"
+                    class="p-button-rounded p-button-text p-button-success mr-2">
+                  </button>
+                  <button
+                    *ngIf="editing"
+                    pButton pRipple
+                    type="button"
+                    pCancelEditableRow
+                    icon="pi pi-times"
+                    (click)="onRowEditCancel(client, ri)"
+                    class="p-button-rounded p-button-text p-button-danger">
+                  </button>
+                </div>
               </td>
             </tr>
           </ng-template>

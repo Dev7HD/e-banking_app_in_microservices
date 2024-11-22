@@ -3,7 +3,6 @@ package ma.dev7hd.accountservice.web;
 import lombok.AllArgsConstructor;
 import ma.dev7hd.accountservice.dtos.AccountDTO;
 import ma.dev7hd.accountservice.dtos.NewAccountDTO;
-import ma.dev7hd.accountservice.dtos.TransactionAccountsBalanceDTO;
 import ma.dev7hd.accountservice.dtos.TransactionAccountsRibDTO;
 import ma.dev7hd.accountservice.services.IAccountService;
 import org.springframework.http.ResponseEntity;
@@ -44,14 +43,20 @@ public class AccountController {
         return accountService.updateAccount(accountDTO, id);
     }
 
-    @DeleteMapping("/{id}")
-    public void deleteAccount(@PathVariable UUID id) throws AccountNotFoundException {
-        accountService.deleteAccountById(id);
-    }
-
     @PostMapping("/transaction")
     public ResponseEntity<String> processTransaction(@RequestBody TransactionAccountsRibDTO dto, double amount){
         return accountService.processTransaction(dto, amount);
+    }
+
+    @DeleteMapping("/{id}/delete")
+    ResponseEntity<String> deleteAccount(@PathVariable UUID id) throws AccountNotFoundException {
+        accountService.deleteAccountById(id);
+        return ResponseEntity.ok("Account deleted");
+    }
+
+    @DeleteMapping("/client/{id}/delete")
+    ResponseEntity<String> deleteAccountByClientId(@PathVariable Long id) {
+        return accountService.deleteAccountByClientId(id);
     }
 
 }

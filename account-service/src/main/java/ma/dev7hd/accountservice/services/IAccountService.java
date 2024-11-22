@@ -2,7 +2,6 @@ package ma.dev7hd.accountservice.services;
 
 import ma.dev7hd.accountservice.dtos.AccountDTO;
 import ma.dev7hd.accountservice.dtos.NewAccountDTO;
-import ma.dev7hd.accountservice.dtos.TransactionAccountsBalanceDTO;
 import ma.dev7hd.accountservice.dtos.TransactionAccountsRibDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,4 +27,6 @@ public interface IAccountService {
 
     @Transactional
     ResponseEntity<String> processTransaction(TransactionAccountsRibDTO dto, double amount);
+
+    ResponseEntity<String> deleteAccountByClientId(Long clientId);
 }

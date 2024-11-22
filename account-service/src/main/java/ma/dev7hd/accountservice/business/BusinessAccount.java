@@ -2,8 +2,10 @@ package ma.dev7hd.accountservice.business;
 
 import lombok.AllArgsConstructor;
 import ma.dev7hd.accountservice.clients.ClientsRestClient;
+import ma.dev7hd.accountservice.clients.TransactionsRestClient;
 import ma.dev7hd.accountservice.entities.Account;
 import ma.dev7hd.accountservice.model.Client;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Component;
@@ -15,6 +17,7 @@ import java.util.Random;
 public class BusinessAccount implements IBusinessAccount {
 
     private final ClientsRestClient clientsRestClient;
+    private final TransactionsRestClient transactionsRestClient;
 
     @Override
     public String generateBankIdentityStatement() {
@@ -30,13 +33,26 @@ public class BusinessAccount implements IBusinessAccount {
         return bankIdentity.toString();
     }
 
+    private String getToken(){
+        Jwt jwt = (Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return "Bearer " + jwt.getTokenValue();
+    }
+
     @Override
     public Account addClientInfo(Account account) {
-        Jwt jwt = (Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String token = "Bearer " + jwt.getTokenValue();
+        String token = getToken();
         Client client = clientsRestClient.getClient(token ,account.getClientId());
-        account.setCustomerInfo(client);
-        return account;
+        if(client != null) {
+            account.setCustomerInfo(client);
+            return account;
+        }
+        throw new RuntimeException("Client not found");
+    }
+
+    @Override
+    public ResponseEntity<String> deleteAccountTransactions(String rib){
+        String token = getToken();
+        return transactionsRestClient.deleteTransactions(token, rib);
     }
 
     @Override

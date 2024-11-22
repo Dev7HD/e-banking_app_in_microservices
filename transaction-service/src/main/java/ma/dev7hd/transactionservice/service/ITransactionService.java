@@ -10,4 +10,8 @@ public interface ITransactionService {
     ResponseEntity<String> processTransaction(TransactionDTO transactionDTO);
 
     List<Transaction> getAllTransactions();
+
+    List<Transaction> getTransactionsByRib(String rib);
+
+    void deleteTransactions(String rib);
 }
