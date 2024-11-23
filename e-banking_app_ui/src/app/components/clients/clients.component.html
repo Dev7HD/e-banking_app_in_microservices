@@ -1,4 +1,31 @@
 <p-toast position="top-center"/>
+<p-confirmDialog #cd>
+  <ng-template pTemplate="headless" let-message>
+    <div class="flex flex-column align-items-center p-5 surface-overlay border-round">
+      <div class="border-circle bg-red-400 inline-flex justify-content-center align-items-center h-6rem w-6rem">
+        <i class="pi pi-exclamation-triangle text-white text-5xl"></i>
+      </div>
+      <span class="font-bold text-2xl block mb-2 mt-4">
+                {{ message.header }}
+            </span>
+      <p class="mb-0">{{ message.message }}</p>
+      <div class="flex align-items-center gap-2 mt-4">
+        <button
+          pButton
+          label="Delete"
+          (click)="cd.accept()"
+          class="w-8rem bg-red-400 border-0">
+        </button>
+        <button
+          pButton
+          label="Cancel"
+          (click)="cd.reject()"
+          class="p-button-outlined w-8rem ">
+        </button>
+      </div>
+    </div>
+  </ng-template>
+</p-confirmDialog>
 <p-dialog  header="New Client" [modal]="true" [(visible)]="newClientVisibleDialog" [style]="{ width: '25rem' }">
   <form [formGroup]="newClientFormGroup" (ngSubmit)="saveClient()">
     <div class="flex align-items-center gap-3 mb-3 mt-3">
@@ -127,46 +154,9 @@
               <th></th>
             </tr>
           </ng-template>
-          <!--<ng-template pTemplate="body" let-client let-columns="columns">
-            <tr>
-              <td>
-                <span class="p-column-title">#</span>{{client.id}}
-              </td>
-              <td>
-                <span class="p-column-title">Client Firstname</span>{{client.firstName}}
-              </td>
-              <td>
-                <span class="p-column-title">Client Firstname</span>{{client.lastName}}
-              </td>
-              <td>
-                <p-tag
-                  [value]="client.clientType"
-                  [severity]="getClientSeverity(client.clientType)" />
-              </td>
-              <td>
-                <p-speedDial
-
-                  [model]="actions"
-                  direction="left"
-                  [radius]="80"
-                  type="semi-circle" />
-              </td>
-            </tr>
-          </ng-template>-->
           <ng-template pTemplate="body" let-client let-editing="editing" let-ri="rowIndex">
             <tr [pEditableRow]="client">
               <td>
-                <!--<p-cellEditor>
-                  <ng-template pTemplate="input">
-                    <input
-                      pInputText
-                      type="text"
-                      [(ngModel)]="client.id" />
-                  </ng-template>
-                  <ng-template pTemplate="output">
-                    {{client.id}}
-                  </ng-template>
-                </p-cellEditor>-->
                 <span class="p-column-title">#</span>{{client.id}}
               </td>
               <td>
@@ -221,6 +211,24 @@
                     pInitEditableRow
                     icon="pi pi-pencil"
                     (click)="onRowEditInit(client)"
+                    class="p-button-rounded p-button-text">
+                  </button>
+                  <button
+                    *ngIf="!editing"
+                    pButton
+                    pRipple
+                    type="button"
+                    icon="pi pi-eye"
+                    (click)="viewClientAccounts(client.id)"
+                    class="p-button-rounded p-button-text">
+                  </button>
+                  <button
+                    *ngIf="!editing"
+                    pButton
+                    pRipple
+                    type="button"
+                    icon="pi pi-trash"
+                    (click)="confirm(client.id, ri)"
                     class="p-button-rounded p-button-text">
                   </button>
                   <button

@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {Transaction} from "../../models/models";
 import {HttpClient} from "@angular/common/http";
 import {environment} from "../../../environments/environment.development";
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
   selector: 'app-transactions',
@@ -13,7 +14,11 @@ export class TransactionsComponent implements OnInit {
   transactions!: Transaction[];
   loading: boolean = false;
   transactionTypes!: any[];
-  constructor(private _http: HttpClient) { }
+  constructor(
+    private _http: HttpClient,
+    private _activatedRoute: ActivatedRoute
+  ) { }
+  rib!: string;
 
   ngOnInit() {
     this.transactionTypes = [
@@ -21,13 +26,33 @@ export class TransactionsComponent implements OnInit {
       {label: "Instantly", value: "INSTANTLY"},
     ]
     this.loading = true;
+    this.rib = this._activatedRoute.snapshot.params['rib'] || undefined;
+    if (this.rib){
+      this.initAccountTransactions()
+    } else {
+      this.initAllTransactions()
+    }
+  }
+
+  initAllTransactions(): void {
     this._http.get<Transaction[]>(`${environment.transaction_service_host}/transactions`).subscribe({
       next: data => {
-        console.warn("fetching transactions....")
         this.loading = false;
-        console.table(data);
         this.transactions = data;
       }, error: error => {
+        this.loading = false
+        console.error("Error fetching transactions data: ", error);
+      }
+    })
+  }
+
+  initAccountTransactions(): void {
+    this._http.get<Transaction[]>(`${environment.transaction_service_host}/transactions/rib/${this.rib}`).subscribe({
+      next: data => {
+        this.loading = false;
+        this.transactions = data;
+      }, error: error => {
+        this.loading = false
         console.error("Error fetching transactions data: ", error);
       }
     })

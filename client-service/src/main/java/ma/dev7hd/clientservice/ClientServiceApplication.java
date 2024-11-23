@@ -30,7 +30,7 @@ public class ClientServiceApplication {
     CommandLineRunner commandLineRunner(ClientRepository clientRepository) {
         return args -> {
             List<Client> clients = new ArrayList<>();
-            for (int i = 0; i < 10; i++) {
+            for (int i = 0; i < 20; i++) {
                 Client client = Client.builder()
                         .clientType(Math.random() > 0.5 ? ClientType.Moral : ClientType.Physical)
                         .firstName("firstName" + i)

@@ -1,6 +1,7 @@
 package ma.dev7hd.accountservice.services;
 
 import lombok.AllArgsConstructor;
+import ma.dev7hd.accountservice.AccountServiceApplication;
 import ma.dev7hd.accountservice.business.IBusinessAccount;
 import ma.dev7hd.accountservice.dtos.AccountDTO;
 import ma.dev7hd.accountservice.dtos.NewAccountDTO;
@@ -68,11 +69,7 @@ public class AccountService implements IAccountService {
     @Override
     public void deleteAccountById(UUID id) throws AccountNotFoundException {
         Account account = accountRepository.findById(id).orElseThrow(() -> new AccountNotFoundException("Account not found"));
-        ResponseEntity<String> response = businessAccount.deleteAccountTransactions(account.getRib());
-        if (response.getStatusCode().value() == 200){
-            accountRepository.delete(account);
-        }
-        throw new AccountNotFoundException("Delete account and their transactions failed");
+        accountRepository.delete(account);
     }
 
     @Transactional
@@ -94,13 +91,17 @@ public class AccountService implements IAccountService {
 
     @Transactional
     @Override
-    public ResponseEntity<String> deleteAccountByClientId(Long clientId){
-        Optional<Account> optionalAccount = accountRepository.findByClientId(clientId);
-        if (optionalAccount.isPresent()){
-            Account account = optionalAccount.get();
-            accountRepository.delete(account);
-            return ResponseEntity.ok("Delete account successfully");
+    public ResponseEntity<String> deleteAccountByClientId(Long clientId) {
+        Set<Account> accounts = accountRepository.findByClientId(clientId);
+        if (!accounts.isEmpty()){
+            accountRepository.deleteAll(accounts);
+            return ResponseEntity.ok(accounts.size() + " account(s) was successfully deleted.");
         }
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.noContent().build();
+    }
+
+    @Override
+    public Set<Account> getClientAccounts(Long clientId){
+        return accountRepository.findByClientId(clientId);
     }
 }

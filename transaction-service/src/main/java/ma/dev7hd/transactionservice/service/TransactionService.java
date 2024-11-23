@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @AllArgsConstructor
@@ -57,14 +58,25 @@ public class TransactionService implements ITransactionService {
     }
 
     @Override
-    public List<Transaction> getTransactionsByRib(String rib){
+    public Set<Transaction> getTransactionsByRib(Set<String> rib){
+        return transactionRepository.findByRibs(rib);
+    }
+
+    @Override
+    public Set<Transaction> getTransactionsByRib(String rib){
         return transactionRepository.findByRib(rib);
     }
 
     @Override
-    public void deleteTransactions(String rib){
-        List<Transaction> transactions = new ArrayList<>(getTransactionsByRib(rib));
-        transactionRepository.deleteAll(transactions);
+    public void deleteTransactions(Set<String> ribs){
+        System.out.println("RIB size: " + ribs.size());
+        List<Transaction> transactions = new ArrayList<>(getTransactionsByRib(ribs));
+        if (!transactions.isEmpty()){
+            System.out.println("transaction id: " + transactions.getFirst().getId());
+            System.out.println("transactions size: " + transactions.size());
+            transactionRepository.deleteAll(transactions);
+        }
+        System.out.println("transactions are empty");
     }
 
 

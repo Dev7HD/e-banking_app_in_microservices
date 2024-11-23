@@ -4,12 +4,14 @@ import lombok.AllArgsConstructor;
 import ma.dev7hd.accountservice.dtos.AccountDTO;
 import ma.dev7hd.accountservice.dtos.NewAccountDTO;
 import ma.dev7hd.accountservice.dtos.TransactionAccountsRibDTO;
+import ma.dev7hd.accountservice.entities.Account;
 import ma.dev7hd.accountservice.services.IAccountService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.security.auth.login.AccountNotFoundException;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @RestController
@@ -57,6 +59,16 @@ public class AccountController {
     @DeleteMapping("/client/{id}/delete")
     ResponseEntity<String> deleteAccountByClientId(@PathVariable Long id) {
         return accountService.deleteAccountByClientId(id);
+    }
+
+    @GetMapping("client/{id}")
+    ResponseEntity<Set<Account>> getClientAccounts(@PathVariable(name = "id") Long clientId){
+        Set<Account> clientAccounts = accountService.getClientAccounts(clientId);
+        if(clientAccounts.isEmpty()){
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.ok(clientAccounts);
+        }
     }
 
 }

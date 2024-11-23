@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 @FeignClient(name = "ACCOUNT-SERVICE")
 public interface AccountRestClient {
 
-    @DeleteMapping("/client/{id}/delete")
+    @DeleteMapping("/accounts/client/{id}/delete")
     @CircuitBreaker(name = "accountService", fallbackMethod = "defaultDeleteAccount")
     ResponseEntity<String> deleteAccountByClientId(@RequestHeader("Authorization") String token,@PathVariable Long id);
 

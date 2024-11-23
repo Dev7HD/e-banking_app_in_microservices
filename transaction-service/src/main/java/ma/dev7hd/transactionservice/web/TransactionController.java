@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @AllArgsConstructor
@@ -26,17 +27,17 @@ public class TransactionController {
     }
 
     @GetMapping("/rib/{rib}")
-    public ResponseEntity<List<Transaction>> getTransactionsByRib(@PathVariable String rib){
-        List<Transaction> transactions = transactionService.getTransactionsByRib(rib);
+    public ResponseEntity<Set<Transaction>> getTransactionsByRib(@PathVariable String rib){
+        Set<Transaction> transactions = transactionService.getTransactionsByRib(rib);
         if(transactions.isEmpty()){
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(transactions);
     }
 
-    @DeleteMapping("/rib/{rib}")
-    public ResponseEntity<String> deleteTransactions(@PathVariable String rib){
-        transactionService.deleteTransactions(rib);
+    @DeleteMapping("/rib")
+    public ResponseEntity<String> deleteTransactions(@RequestBody Set<String> ribs){
+        transactionService.deleteTransactions(ribs);
         return ResponseEntity.ok("Account transactions deleted successfully");
     }
 }

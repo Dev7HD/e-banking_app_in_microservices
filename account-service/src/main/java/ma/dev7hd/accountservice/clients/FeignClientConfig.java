@@ -8,7 +8,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 
 @Configuration
 public class FeignClientConfig {
-    @Bean
+    //@Bean
     public RequestInterceptor requestInterceptor() {
         return template -> {
             Jwt jwt = (Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

@@ -43,9 +43,10 @@
               <th>Account Type</th>
               <th>Balance</th>
               <th>RIB</th>
-              <th>Client ID</th>
-              <th>Client Full Name</th>
-              <th>Client Type</th>
+              <th *ngIf="allAccounts" >Client ID</th>
+              <th *ngIf="allAccounts">Client Full Name</th>
+              <th *ngIf="allAccounts">Client Type</th>
+              <th >Actions</th>
             </tr>
             <tr>
               <th>
@@ -87,17 +88,17 @@
                   placeholder="Search by RIB"
                   ariaLabel="Filter RIB" />
               </th>
-              <th>
+              <th *ngIf="allAccounts">
                 <p-columnFilter
                   type="text"
                   field="customerInfo.id"
                   placeholder="Search by client id"
                   ariaLabel="Filter client id" />
               </th>
-              <th>
+              <th *ngIf="allAccounts">
 
               </th>
-              <th>
+              <th *ngIf="allAccounts">
                 <p-columnFilter field="customerInfo.clientType" matchMode="equals" [showMenu]="false">
                   <ng-template pTemplate="filter" let-value let-filter="filterCallback">
                     <p-dropdown
@@ -114,6 +115,9 @@
                     </p-dropdown>
                   </ng-template>
                 </p-columnFilter>
+              </th>
+              <th >
+
               </th>
             </tr>
           </ng-template>
@@ -133,18 +137,27 @@
               <td>
                 <span class="p-column-title">RIB</span>{{account.rib}}
               </td>
-              <td>
+              <td *ngIf="allAccounts">
                 <span class="p-column-title">Client ID</span>{{account.customerInfo.id}}
               </td>
-              <td>
+              <td *ngIf="allAccounts">
                 <span class="p-column-title">Client Full Name</span>{{account.customerInfo.firstName}} {{account.customerInfo.lastName}}
               </td>
-              <td>
+              <td *ngIf="allAccounts">
                 <p-tag
                   [value]="account.customerInfo.clientType"
                   [severity]="getClientSeverity(account.customerInfo.clientType)" />
               </td>
-
+              <td>
+                <button
+                  pButton
+                  pRipple
+                  type="button"
+                  icon="pi pi-arrow-down-left-and-arrow-up-right-to-center"
+                  (click)="viewTransactions(account.rib)"
+                  class="p-button-rounded p-button-text">
+                </button>
+              </td>
             </tr>
           </ng-template>
         </p-table>

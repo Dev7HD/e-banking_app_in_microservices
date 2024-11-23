@@ -3,7 +3,7 @@ import {HttpClient} from "@angular/common/http";
 import {Client, ClientDTO} from "../../models/models";
 import {environment} from "../../../environments/environment.development";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {MenuItem, MessageService} from "primeng/api";
+import {ConfirmationService, MessageService} from "primeng/api";
 import {Router} from "@angular/router";
 
 @Component({
@@ -14,20 +14,21 @@ import {Router} from "@angular/router";
 export class ClientsComponent implements OnInit {
 
   clients: any[] = [];
-  accountId!: string;
+  isDeleting: boolean = false;
   isSaving: boolean = false;
   loading: boolean = false;
   clientType!: any[];
   newClientVisibleDialog!: boolean;
   newClientFormGroup!: FormGroup;
-  actions!: MenuItem[];
   clonedClients: { [s: string]: Client } = {};
+  isDeletingClient: boolean = false;
 
   constructor(
     private _http: HttpClient,
     private _formBuilder: FormBuilder,
     private _messageService: MessageService,
-    private _router: Router
+    private _router: Router,
+    private confirmationService: ConfirmationService,
   ) { }
 
   ngOnInit() {
@@ -44,6 +45,36 @@ export class ClientsComponent implements OnInit {
         this.clients = data;
       }, error: error => {
         console.error("Error fetching clients data: ", error);
+      }
+    })
+  }
+
+  confirm(id: number, ri: number) {
+    this.confirmationService.confirm({
+      header: 'Are you sure?',
+      message: 'Please confirm to proceed deleting this client. id: ' + id,
+      accept: () => {
+        this.isDeleting = true;
+        this.deleteClient(id, ri);
+      },
+      reject: () => {
+        console.log("Confirmation declined.")
+      }
+    });
+  }
+
+  deleteClient(id: number, ri: number){
+    this._messageService.add({ severity: 'warn', summary: 'Deleting', detail: "Deleting client with..." });
+    this._http.delete(`${environment.client_service_host}/clients/${id}/delete`, { responseType: 'text' }).subscribe({
+      next: msg => {
+        this._messageService.clear()
+        this.isDeleting = false;
+        this._messageService.add({ severity: 'info', summary: 'Confirmed', detail: msg, life: 3000 });
+        this.clients.splice(ri, 1)
+      }, error: error => {
+        this.isDeleting = false;
+        console.error("Error deleting client : ", error);
+        this._messageService.add({ severity: 'error', summary: 'Rejected', detail: 'Deleting client failed!', life: 3000 });
       }
     })
   }
@@ -73,10 +104,11 @@ export class ClientsComponent implements OnInit {
     this.newClientFormGroup.disable();
     this.isSaving = true;
     this._http.post<Client>(`${environment.client_service_host}/clients/new`, this.newClientFormGroup.value).subscribe({
-      next: () => {
+      next: data => {
         this.isSaving = false;
         this.newClientVisibleDialog = false;
         this.initNewClientForm()
+        this.clients.unshift(data);
         this._messageService.add({ severity: 'success', summary: 'Success', detail: 'Client saved successfully.', life: 3000 });
       }, error: err => {
         this.newClientFormGroup.enable();
@@ -122,4 +154,7 @@ export class ClientsComponent implements OnInit {
     delete this.clonedClients[client.id as number];
   }
 
+  viewClientAccounts(id: number) {
+    this._router.navigateByUrl(`/accounts/client/${id}`)
+  }
 }

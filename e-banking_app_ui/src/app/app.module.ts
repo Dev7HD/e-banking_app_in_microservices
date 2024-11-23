@@ -29,12 +29,13 @@ import {SelectButtonModule} from "primeng/selectbutton";
 import {ToastModule} from "primeng/toast";
 import {ReactiveFormsModule} from "@angular/forms";
 import {MessageModule} from "primeng/message";
-import {MessageService} from "primeng/api";
+import {ConfirmationService, MessageService} from "primeng/api";
 import {PaginatorModule} from "primeng/paginator";
 import {IconFieldModule} from "primeng/iconfield";
 import {InputIconModule} from "primeng/inputicon";
 import {DialogModule} from "primeng/dialog";
 import {SpeedDialModule} from "primeng/speeddial";
+import {ConfirmDialogModule} from "primeng/confirmdialog";
 
 function initializeKeycloak(keycloak: KeycloakService) {
   return () =>
@@ -88,7 +89,8 @@ function initializeKeycloak(keycloak: KeycloakService) {
     IconFieldModule,
     InputIconModule,
     DialogModule,
-    SpeedDialModule
+    SpeedDialModule,
+    ConfirmDialogModule
   ],
   providers: [
     {
@@ -98,6 +100,7 @@ function initializeKeycloak(keycloak: KeycloakService) {
       deps: [KeycloakService]
     },
     MessageService,
+    ConfirmationService,
   ],
   bootstrap: [AppComponent]
 })

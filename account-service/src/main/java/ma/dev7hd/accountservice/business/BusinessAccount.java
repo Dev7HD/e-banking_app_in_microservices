@@ -5,7 +5,6 @@ import ma.dev7hd.accountservice.clients.ClientsRestClient;
 import ma.dev7hd.accountservice.clients.TransactionsRestClient;
 import ma.dev7hd.accountservice.entities.Account;
 import ma.dev7hd.accountservice.model.Client;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Component;
@@ -17,7 +16,6 @@ import java.util.Random;
 public class BusinessAccount implements IBusinessAccount {
 
     private final ClientsRestClient clientsRestClient;
-    private final TransactionsRestClient transactionsRestClient;
 
     @Override
     public String generateBankIdentityStatement() {
@@ -47,12 +45,6 @@ public class BusinessAccount implements IBusinessAccount {
             return account;
         }
         throw new RuntimeException("Client not found");
-    }
-
-    @Override
-    public ResponseEntity<String> deleteAccountTransactions(String rib){
-        String token = getToken();
-        return transactionsRestClient.deleteTransactions(token, rib);
     }
 
     @Override

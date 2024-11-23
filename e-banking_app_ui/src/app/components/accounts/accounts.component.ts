@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Account} from "../../models/models";
 import {environment} from "../../../environments/environment.development";
+import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
   selector: 'app-accounts',
@@ -14,8 +15,14 @@ export class AccountsComponent implements OnInit {
   loading: boolean = false;
   clientType!: any[];
   accountTypes!: any[];
+  clientId!: number;
+  allAccounts: boolean = false;
 
-  constructor(private _http: HttpClient) {
+  constructor(
+    private _http: HttpClient,
+    private _activatedRoute: ActivatedRoute,
+    private _router: Router,
+    ) {
   }
 
   ngOnInit() {
@@ -28,12 +35,35 @@ export class AccountsComponent implements OnInit {
       {label: "Physical", value: "Physical"}
     ]
     this.loading = true;
+    this.clientId = this._activatedRoute.snapshot.params['id'] || undefined;
+    if (this.clientId){
+      this.initClientAccounts()
+    } else {
+      this.initAllAccounts()
+    }
+  }
+
+  initClientAccounts(){
+    this.allAccounts = false;
+    this._http.get<Account[]>(`${environment.account_service_host}/accounts/client/${this.clientId}`).subscribe({
+      next: data => {
+        this.accounts = data;
+        this.loading = false
+      }, error: error => {
+        this.loading = false
+        console.log("Error fetching accounts data: ", error);
+      }
+    })
+  }
+
+  initAllAccounts(){
+    this.allAccounts = true;
     this._http.get<Account[]>(`${environment.account_service_host}/accounts`).subscribe({
       next: data => {
         this.loading = false;
-        console.table(data);
         this.accounts = data;
       }, error: error => {
+        this.loading = false
         console.log("Error fetching accounts data: ", error);
       }
     })
@@ -57,4 +87,7 @@ export class AccountsComponent implements OnInit {
     }
   }
 
+  viewTransactions(rib: string) {
+    this._router.navigateByUrl(`/transactions/account/${rib}`);
+  }
 }

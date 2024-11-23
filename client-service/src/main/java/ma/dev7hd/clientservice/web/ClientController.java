@@ -16,8 +16,9 @@ public class ClientController {
     private final IClientService clientService;
 
     @GetMapping()
-    public List<Client> getAllClients() {
-        return clientService.getAllClients();
+    public ResponseEntity<List<Client>> getAllClients() {
+        List<Client> clients = clientService.getAllClients();
+        return clients.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(clients);
     }
 
     @GetMapping("/{id}")

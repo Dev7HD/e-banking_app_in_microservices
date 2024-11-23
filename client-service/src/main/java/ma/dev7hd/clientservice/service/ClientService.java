@@ -55,7 +55,12 @@ public class ClientService implements IClientService {
     public ResponseEntity<String> deleteClientById(Long id) {
         Optional<Client> client = clientRepository.findById(id);
         if (client.isPresent()) {
-            return clientBusiness.deleteAccountByClientId(id);
+            ResponseEntity<String> response = clientBusiness.deleteAccountByClientId(id);
+            if (response.getStatusCode().is2xxSuccessful()) {
+                System.out.println("Status 200: " + response.getStatusCode().value());
+                clientRepository.delete(client.get());
+                return ResponseEntity.ok("Client deleted successfully");
+            }
         }
         return ResponseEntity.notFound().build();
     }
