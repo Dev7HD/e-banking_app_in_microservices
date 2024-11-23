@@ -15,19 +15,19 @@ public interface ClientsRestClient {
 
     @GetMapping("/clients/{id}")
     @CircuitBreaker(name = "clientService", fallbackMethod = "getDefaultClient")
-    Client getClient(@RequestHeader("Authorization") String token, @PathVariable Long id);
+    ResponseEntity<Client> getClient(@RequestHeader("Authorization") String token, @PathVariable Long id);
 
     @GetMapping("/clients")
     @CircuitBreaker(name = "clientService", fallbackMethod = "getDefaultClients")
     ResponseEntity<List<Client>> getClients(@RequestHeader("Authorization") String token);
 
-    default Client getDefaultClient(String token, Long id, Exception e) {
+    default ResponseEntity<Client> getDefaultClient(String token, Long id, Exception e) {
         Client customer = new Client();
         customer.setId(id);
         customer.setFirstName("Not available");
         customer.setLastName("Not available");
         customer.setClientType(null);
-        return customer;
+        return ResponseEntity.ok(customer);
     }
 
     default ResponseEntity<List<Client>> getDefaultClients(String token, Exception e) {

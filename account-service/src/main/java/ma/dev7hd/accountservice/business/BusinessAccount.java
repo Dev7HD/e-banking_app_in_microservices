@@ -39,7 +39,7 @@ public class BusinessAccount implements IBusinessAccount {
     @Override
     public Account addClientInfo(Account account) {
         String token = getToken();
-        Client client = clientsRestClient.getClient(token ,account.getClientId());
+        Client client = clientsRestClient.getClient(token ,account.getClientId()).getBody();
         if(client != null) {
             account.setCustomerInfo(client);
             return account;

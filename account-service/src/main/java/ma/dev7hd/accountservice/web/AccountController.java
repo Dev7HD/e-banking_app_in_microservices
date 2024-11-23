@@ -37,7 +37,10 @@ public class AccountController {
 
     @PostMapping("/new")
     public AccountDTO createAccount(@RequestBody NewAccountDTO accountDTO) {
-        return accountService.createAccount(accountDTO);
+        AccountDTO account = accountService.createAccount(accountDTO);
+        System.out.println("new account:");
+        System.out.println(account);
+        return account;
     }
 
     @PatchMapping("/{id}/update")

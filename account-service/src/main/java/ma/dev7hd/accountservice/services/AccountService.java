@@ -45,15 +45,19 @@ public class AccountService implements IAccountService {
     @Transactional
     @Override
     public AccountDTO createAccount(NewAccountDTO accountDTO) {
+        String rib = businessAccount.generateBankIdentityStatement();
         Account account = Account.builder()
                 .accountType(accountDTO.getAccountType())
                 .balance(accountDTO.getBalance())
                 .createdAt(new Date())
-                .currency(accountDTO.getCurrency())
+                .currency(accountDTO.getCurrency().toUpperCase())
                 .clientId(accountDTO.getClientId())
+                .rib(rib)
                 .build();
 
-        return mapper.accountToAccountDTO(accountRepository.save(businessAccount.addClientInfo(account)));
+        Account saved = accountRepository.save(businessAccount.addClientInfo(account));
+        System.out.println(saved);
+        return mapper.accountToAccountDTO(saved);
     }
 
     @Transactional

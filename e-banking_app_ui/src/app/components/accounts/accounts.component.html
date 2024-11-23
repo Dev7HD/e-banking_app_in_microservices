@@ -1,3 +1,43 @@
+<p-dialog  header="New Client" [modal]="true" [(visible)]="showAddAccountFormDialog" [style]="{ width: '35rem' }">
+  {{addAccountFormGroup.value | json}}
+  <form [formGroup]="addAccountFormGroup" (ngSubmit)="saveAccount()">
+    <div class="flex align-items-center gap-3 mb-3 mt-3">
+      <label for="first-name" class="font-semibold w-6rem">Client ID {{clientId}}</label>
+      <input pInputText id="first-name" class="flex-auto" autocomplete="off" formControlName="clientId" required/>
+    </div>
+    <div class="flex align-items-center gap-3 mb-3">
+      <label for="last-name" class="font-semibold w-6rem">Balance</label>
+      <input pInputText id="last-name" class="flex-auto" autocomplete="off" formControlName="balance" required/>
+    </div>
+    <div class="flex align-items-center gap-3 mb-3">
+      <label for="currency" class="font-semibold w-6rem">Currency</label>
+      <input pInputText id="currency" class="flex-auto" autocomplete="off" formControlName="currency" required/>
+    </div>
+    <div class="flex align-items-center gap-3 mb-5">
+      <label for="account-type" class="font-semibold w-6rem">Client Type</label>
+      <div class="p-card flex justify-content-center">
+        <p-selectButton
+          id="account-type"
+          [options]="accountTypes"
+          formControlName="accountType"
+          optionLabel="label"
+          optionValue="value" />
+      </div>
+    </div>
+    <div class="flex justify-content-end gap-2">
+      <p-button label="Cancel" severity="secondary" (onClick)="dismiss()" />
+      <p-button label="Save" type="submit" [disabled]="isSaving || !addAccountFormGroup.valid">
+        <p-progressSpinner
+          *ngIf="isSaving"
+          styleClass="w-1rem h-1rem"
+          strokeWidth="8"
+          fill="var(--surface-ground)"
+          animationDuration=".5s" />
+      </p-button>
+    </div>
+  </form>
+</p-dialog>
+
 <div class="mt-3 flex justify-content-center">
   <div class="p-card" style="{'min-width': '50rem'}">
     <div class="p-card-title flex justify-content-center p-5">Accounts</div>
@@ -35,6 +75,14 @@
                   (input)="dt.filterGlobal(globalFilter.value, 'contains')"
                   placeholder="Search keyword" />
               </p-iconField>
+              <p-button
+                severity="primary"
+                icon="pi pi-plus"
+                iconPos="right"
+                label="Add account"
+                raised
+                (onClick)="showAddAccountFormDialog = true"
+              />
             </div>
           </ng-template>
           <ng-template pTemplate="header" let-columns>

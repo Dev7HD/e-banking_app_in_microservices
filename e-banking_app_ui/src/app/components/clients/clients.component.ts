@@ -21,7 +21,6 @@ export class ClientsComponent implements OnInit {
   newClientVisibleDialog!: boolean;
   newClientFormGroup!: FormGroup;
   clonedClients: { [s: string]: Client } = {};
-  isDeletingClient: boolean = false;
 
   constructor(
     private _http: HttpClient,
