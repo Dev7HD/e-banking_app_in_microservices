@@ -14,7 +14,6 @@ export class NewTransactionComponent implements OnInit {
   stateOptions!: any[];
   transactionFormGroup!: FormGroup;
   isSaving!: boolean;
-  transaction!: TransactionDTO;
 
   constructor(
     private _formBuilder: FormBuilder,
@@ -34,9 +33,8 @@ export class NewTransactionComponent implements OnInit {
   makeTransaction(): void {
     this.transactionFormGroup.disable();
     this.isSaving=true;
-    this.transaction =this.transactionFormGroup.value;
 
-    this._http.post(`${environment.transaction_service_host}/transactions/new`, this.transaction, { responseType: 'text' }).subscribe({
+    this._http.post(`${environment.transaction_service_host}/transactions/new`, this.transactionFormGroup.value, { responseType: 'text' }).subscribe({
       next: response => {
         this.isSaving=false;
         this.showSuccessMsg(response);

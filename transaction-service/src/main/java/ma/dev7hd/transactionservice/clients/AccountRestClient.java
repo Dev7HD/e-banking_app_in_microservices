@@ -16,7 +16,7 @@ public interface AccountRestClient {
 
     @PostMapping("/accounts/transaction")
     @CircuitBreaker(name = "accountService", fallbackMethod = "getDefaultTransaction")
-    ResponseEntity<String> getAccountBalance(@RequestHeader("Authorization") String token, @RequestBody TransactionAccountsRibDTO dto,@RequestParam double amount);
+    ResponseEntity<String> makeTransaction(@RequestHeader("Authorization") String token, @RequestBody TransactionAccountsRibDTO dto,@RequestParam double amount);
 
     default ResponseEntity<String> getDefaultTransaction(String token, TransactionAccountsRibDTO dto, double amount, Exception e) {
         return ResponseEntity.badRequest().body("Transaction failed!");

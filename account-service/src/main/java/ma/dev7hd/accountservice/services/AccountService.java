@@ -38,7 +38,7 @@ public class AccountService implements IAccountService {
 
     @Override
     public AccountDTO getAccountByRIB(String rib) {
-        Account account = accountRepository.findByRib(rib).orElse(null);
+        Account account = accountRepository.findByRibOrderByCreatedAtDesc(rib).orElse(null);
         return account != null ? mapper.accountToAccountDTO(businessAccount.addClientInfo(account)) : null;
     }
 
@@ -81,8 +81,8 @@ public class AccountService implements IAccountService {
     public ResponseEntity<String> processTransaction(TransactionAccountsRibDTO dto, double amount){
 
         if (!Objects.equals(dto.getRibReceiver(), dto.getRibSender())){
-            Account sender = accountRepository.findByRib(dto.getRibSender()).orElse(null);
-            Account receiver = accountRepository.findByRib(dto.getRibReceiver()).orElse(null);
+            Account sender = accountRepository.findByRibOrderByCreatedAtDesc(dto.getRibSender()).orElse(null);
+            Account receiver = accountRepository.findByRibOrderByCreatedAtDesc(dto.getRibReceiver()).orElse(null);
             if(sender != null && receiver != null && amount > 0 && sender.getBalance() >= amount){
                 Account debited = businessAccount.debit(sender, amount);
                 Account credited = businessAccount.credit(receiver, amount);
@@ -96,7 +96,7 @@ public class AccountService implements IAccountService {
     @Transactional
     @Override
     public ResponseEntity<String> deleteAccountByClientId(Long clientId) {
-        Set<Account> accounts = accountRepository.findByClientId(clientId);
+        Set<Account> accounts = accountRepository.findByClientIdOrderByCreatedAtDesc(clientId);
         if (!accounts.isEmpty()){
             accountRepository.deleteAll(accounts);
             return ResponseEntity.ok(accounts.size() + " account(s) was successfully deleted.");
@@ -106,6 +106,6 @@ public class AccountService implements IAccountService {
 
     @Override
     public Set<Account> getClientAccounts(Long clientId){
-        return accountRepository.findByClientId(clientId);
+        return accountRepository.findByClientIdOrderByCreatedAtDesc(clientId);
     }
 }

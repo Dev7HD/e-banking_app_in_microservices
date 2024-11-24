@@ -9,8 +9,8 @@ import java.util.UUID;
 
 public interface AccountRepository extends JpaRepository<Account, UUID> {
 
-    Optional<Account> findByRib(String rib);
+    Optional<Account> findByRibOrderByCreatedAtDesc(String rib);
 
-    Set<Account> findByClientId(Long clientId);
+    Set<Account> findByClientIdOrderByCreatedAtDesc(Long clientId);
 
 }

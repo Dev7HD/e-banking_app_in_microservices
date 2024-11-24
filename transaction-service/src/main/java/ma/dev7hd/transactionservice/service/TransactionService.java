@@ -27,11 +27,15 @@ public class TransactionService implements ITransactionService {
         Jwt jwt = (Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String token = "Bearer " + jwt.getTokenValue();
 
+        if (transactionDTO.getRibReceiver() == null || transactionDTO.getRibSender() == null || transactionDTO.getRibReceiver().isEmpty() || transactionDTO.getRibSender().isEmpty() || transactionDTO.getRibReceiver().equals(transactionDTO.getRibSender())) {
+            return ResponseEntity.badRequest().body("Transaction cannot be processed.");
+        }
+
         TransactionAccountsRibDTO ribDTO = new TransactionAccountsRibDTO();
         ribDTO.setRibSender(transactionDTO.getRibSender());
         ribDTO.setRibReceiver(transactionDTO.getRibReceiver());
 
-        ResponseEntity<String> accountBalanceResponse = accountRestClient.getAccountBalance(token, ribDTO, transactionDTO.getAmount());
+        ResponseEntity<String> accountBalanceResponse = accountRestClient.makeTransaction(token, ribDTO, transactionDTO.getAmount());
 
         if (accountBalanceResponse.getStatusCode().value() == 200) {
             String msg = accountBalanceResponse.getBody();
@@ -69,11 +73,8 @@ public class TransactionService implements ITransactionService {
 
     @Override
     public void deleteTransactions(Set<String> ribs){
-        System.out.println("RIB size: " + ribs.size());
         List<Transaction> transactions = new ArrayList<>(getTransactionsByRib(ribs));
         if (!transactions.isEmpty()){
-            System.out.println("transaction id: " + transactions.getFirst().getId());
-            System.out.println("transactions size: " + transactions.size());
             transactionRepository.deleteAll(transactions);
         }
         System.out.println("transactions are empty");
